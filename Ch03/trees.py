@@ -5,6 +5,7 @@ Decision Tree Source Code for Machine Learning in Action Ch. 3
 '''
 from math import log
 import operator
+from collections import Counter
 
 def createDataSet():
     labels = [      'no surfacing', 'flippers'] # is fish
@@ -21,16 +22,14 @@ def createDataSet():
 
 def calcShannonEnt(dataSet):
     numEntries = len(dataSet)
-    labelCounts = {}
-    for featVec in dataSet: #the the number of unique elements and their occurance
-        currentLabel = featVec[-1]
-        if currentLabel not in labelCounts.keys(): labelCounts[currentLabel] = 0
-        labelCounts[currentLabel] += 1
-    shannonEnt = 0.0
-    for key in labelCounts:
-        prob = float(labelCounts[key])/numEntries
-        shannonEnt -= prob * log(prob,2) #log base 2
-    return shannonEnt
+    labelCounts = Counter(featVec[-1] for featVec in dataSet)
+    
+    logBase2 = lambda n: log(n, 2)
+    def entropy(labelCount):
+        prob = float(labelCount) / numEntries
+        return -1 * prob * logBase2(prob)
+    
+    return sum(entropy(labelCount) for labelCount in labelCounts.values())
     
 def splitDataSet(dataSet, axis, value):
     retDataSet = []
