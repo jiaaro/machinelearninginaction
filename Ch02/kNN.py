@@ -14,6 +14,7 @@ Output:     the most popular class label
 from numpy import *
 import operator
 from os import listdir
+from collections import Counter
 
 def classify0(inX, dataSet, labels, k):
     dataSetSize = dataSet.shape[0]
@@ -22,17 +23,11 @@ def classify0(inX, dataSet, labels, k):
     sqDistances = sqDiffMat.sum(axis=1)
     distances = sqDistances**0.5
     sortedDistIndicies = distances.argsort()     
-    classCount={}          
-    for i in range(k):
-        voteIlabel = labels[sortedDistIndicies[i]]
-        classCount[voteIlabel] = classCount.get(voteIlabel,0) + 1
-        
-        #if classCount.has_key(voteIlabel):
-        #    classCount[voteIlabel] += 1
-        #else:
-        #    classCount[voteIlabel] = 1
-    sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
-    return sortedClassCount[0][0]
+    
+    classCount = Counter(labels[i] for i in sortedDistIndicies[:k])
+    topClassCount = max(classCount.iteritems(), key=lambda obj: obj[1])
+    
+    return topClassCount[0]
 
 def createDataSet():
     group = array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
@@ -47,8 +42,7 @@ def file2matrix(filename):
     fr = open(filename)
     index = 0
     for line in fr.readlines():
-        line = line.strip()
-        listFromLine = line.split('\t')
+        listFromLine = line.strip().split('\t')
         returnMat[index,:] = listFromLine[0:3]
         classLabelVector.append(int(listFromLine[-1]))
         index += 1
