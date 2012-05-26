@@ -7,12 +7,15 @@ from math import log
 import operator
 
 def createDataSet():
-    dataSet = [[1, 1, 'yes'],
-               [1, 1, 'yes'],
-               [1, 0, 'no'],
-               [0, 1, 'no'],
-               [0, 1, 'no']]
-    labels = ['no surfacing','flippers']
+    labels = [      'no surfacing', 'flippers'] # is fish
+    dataSet = [
+               [    1,              1,          'yes'   ],
+               [    1,              1,          'yes'   ],
+               [    1,              0,          'no'    ],
+               [    0,              1,          'no'    ],
+               [    0,              1,          'no'    ],
+    ]
+    
     #change to discrete values
     return dataSet, labels
 
